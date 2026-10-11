@@ -2,24 +2,290 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <title>ทดสอบอ่านบัตรประชาชน</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 1. เปลี่ยนชื่อแท็บตรงนี้ -->
+    <title>ระบบอ่านบัตรประชาชน | Powered by POND</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        body { font-family: sans-serif; padding: 20px; }
-        #output { background: #f0f0f0; padding: 15px; border-radius: 5px; white-space: pre-wrap; font-size: 16px; }
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --success-bg: #dcfce7;
+            --success-text: #15803d;
+            --danger-bg: #fee2e2;
+            --danger-text: #b91c1c;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Prompt', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            overflow: hidden; /* ป้องกัน scrollbar ขึ้นตอนเปิดอนิเมชัน */
+        }
+
+        /* -------------------------------------------------- */
+        /* อนิเมชันตอนเข้าเว็บ Splash Screen */
+        /* -------------------------------------------------- */
+        #splashScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #0f172a; /* พื้นหลังสีเข้มดูพรีเมียม */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+
+        .splash-text {
+            color: #ffffff;
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 1s ease forwards 0.2s;
+        }
+
+        .splash-sub {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            margin-top: 8px;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards 0.5s;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .splash-hide {
+            opacity: 0 !important;
+            visibility: hidden !important;
+        }
+
+        /* -------------------------------------------------- */
+        /* โครงสร้างหน้าเว็บหลัก */
+        /* -------------------------------------------------- */
+        .container {
+            width: 100%;
+            max-width: 520px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.05);
+            padding: 32px;
+            border: 1px solid var(--border);
+            opacity: 0;
+            transform: scale(0.96);
+            transition: all 0.6s ease;
+        }
+
+        .container.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .header p {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 24px;
+            width: 100%;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .status-badge.connecting {
+            background-color: #f1f5f9;
+            color: var(--text-muted);
+        }
+
+        .status-badge.connected {
+            background-color: var(--success-bg);
+            color: var(--success-text);
+        }
+
+        .status-badge.disconnected {
+            background-color: var(--danger-bg);
+            color: var(--danger-text);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: currentColor;
+        }
+
+        .card-data {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .field-label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .field-value {
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text-main);
+            background: #f8fafc;
+            padding: 12px 16px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            min-height: 46px;
+            display: flex;
+            align-items: center;
+        }
+
+        .field-value.highlight {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--primary);
+            background: #eff6ff;
+            border-color: #bfdbfe;
+        }
+
+        .placeholder-state {
+            text-align: center;
+            padding: 36px 16px;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            border: 2px dashed var(--border);
+            border-radius: 14px;
+        }
+
+        .placeholder-icon {
+            font-size: 2.8rem;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .footer-credit {
+            text-align: center;
+            margin-top: 28px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
     </style>
 </head>
 <body>
-    <h2>ข้อมูลบัตรประชาชน</h2>
-    <div id="status">กำลังเชื่อมต่อ...</div>
-    <div id="output">รอข้อมูล...</div>
+
+    <!-- หน้า Splash Screen ตอนเข้าเว็บ -->
+    <div id="splashScreen">
+        <div class="splash-text">⚡ Powered by POND</div>
+        <div class="splash-sub">Smart Card Reader System</div>
+    </div>
+
+    <!-- คอนเทนต์หลัก -->
+    <div class="container" id="mainContainer">
+        <div class="header">
+            <h2>🪪 ระบบอ่านบัตรประชาชน</h2>
+            <p>เสียบบัตรประชาชนเข้ากับเครื่องอ่านเพื่อดึงข้อมูลอัตโนมัติ</p>
+        </div>
+
+        <div id="statusBadge" class="status-badge connecting">
+            <span class="status-dot"></span>
+            <span id="statusText">กำลังเชื่อมต่อระบบ...</span>
+        </div>
+
+        <div id="contentArea">
+            <div class="placeholder-state">
+                <span class="placeholder-icon">💳</span>
+                กรุณาเสียบบัตรประชาชนเข้ากับเครื่องอ่าน
+            </div>
+        </div>
+
+        <div class="footer-credit">
+            Powered by POND
+        </div>
+    </div>
 
     <script>
-        // เชื่อมต่อไปยังโปรแกรมอ่านบัตร (Local WebSocket Server)
+        // จังหวะปิด Splash Screen หลังเปิดเว็บ 2 วินาที
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('splashScreen').classList.add('splash-hide');
+                document.getElementById('mainContainer').classList.add('show');
+                document.body.style.overflow = 'auto'; // เปิดให้ scroll หน้าเว็บได้ปกติ
+            }, 2000);
+        });
+
+        // ระบบ WebSocket
         const ws = new WebSocket('ws://localhost:8080');
+        const statusBadge = document.getElementById('statusBadge');
+        const statusText = document.getElementById('statusText');
+        const contentArea = document.getElementById('contentArea');
 
         ws.onopen = () => {
-            document.getElementById('status').innerText = '🟢 เชื่อมต่อกับเครื่องอ่านบัตรแล้ว (กรุณาเสียบบัตร)';
-            document.getElementById('status').style.color = 'green';
+            statusBadge.className = 'status-badge connected';
+            statusText.innerText = 'พร้อมใช้งาน (รอการเสียบบัตร)';
         };
 
         ws.onmessage = (event) => {
@@ -27,16 +293,43 @@
             
             if (response.status === 'success') {
                 const data = response.data;
-                const displayText = `เลขประจำตัวประชาชน: ${data.cid}\nชื่อ (ไทย): ${data.nameTh}\nชื่อ (อังกฤษ): ${data.nameEn}\nวันเกิด: ${data.dob}\nที่อยู่: ${data.address}`;
-                document.getElementById('output').innerText = displayText;
-            } else if (response.status === 'connected') {
-                console.log(response.message);
+                
+                contentArea.innerHTML = `
+                    <div class="card-data">
+                        <div class="field-group">
+                            <span class="field-label">เลขประจำตัวประชาชน</span>
+                            <div class="field-value highlight">${data.cid}</div>
+                        </div>
+                        <div class="field-group">
+                            <span class="field-label">ชื่อ - นามสกุล (ไทย)</span>
+                            <div class="field-value">${data.nameTh}</div>
+                        </div>
+                        <div class="field-group">
+                            <span class="field-label">ชื่อ - นามสกุล (อังกฤษ)</span>
+                            <div class="field-value">${data.nameEn || '-'}</div>
+                        </div>
+                        <div class="field-group">
+                            <span class="field-label">วันเกิด</span>
+                            <div class="field-value">${data.dob}</div>
+                        </div>
+                        <div class="field-group">
+                            <span class="field-label">ที่อยู่ตามบัตร</span>
+                            <div class="field-value">${data.address}</div>
+                        </div>
+                    </div>
+                `;
             }
         };
 
         ws.onclose = () => {
-            document.getElementById('status').innerText = '🔴 ตัดการเชื่อมต่อกับเครื่องอ่านบัตร (โปรดรัน node read.js)';
-            document.getElementById('status').style.color = 'red';
+            statusBadge.className = 'status-badge disconnected';
+            statusText.innerText = 'ตัดการเชื่อมต่อ (โปรดเปิดโปรแกรม read.js)';
+            contentArea.innerHTML = `
+                <div class="placeholder-state">
+                    <span class="placeholder-icon">⚠️</span>
+                    ไม่สามารถเชื่อมต่อกับเครื่องอ่านบัตรได้
+                </div>
+            `;
         };
     </script>
 </body>
