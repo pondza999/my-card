@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>ทดสอบอ่านบัตรประชาชน</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        #output { background: #f0f0f0; padding: 15px; border-radius: 5px; white-space: pre-wrap; font-size: 16px; }
+    </style>
+</head>
+<body>
+    <h2>ข้อมูลบัตรประชาชน</h2>
+    <div id="status">กำลังเชื่อมต่อ...</div>
+    <div id="output">รอข้อมูล...</div>
+
+    <script>
+        // เชื่อมต่อไปยังโปรแกรมอ่านบัตร (Local WebSocket Server)
+        const ws = new WebSocket('ws://localhost:8080');
+
+        ws.onopen = () => {
+            document.getElementById('status').innerText = '🟢 เชื่อมต่อกับเครื่องอ่านบัตรแล้ว (กรุณาเสียบบัตร)';
+            document.getElementById('status').style.color = 'green';
+        };
+
+        ws.onmessage = (event) => {
+            const response = JSON.parse(event.data);
+            
+            if (response.status === 'success') {
+                const data = response.data;
+                const displayText = `เลขประจำตัวประชาชน: ${data.cid}\nชื่อ (ไทย): ${data.nameTh}\nชื่อ (อังกฤษ): ${data.nameEn}\nวันเกิด: ${data.dob}\nที่อยู่: ${data.address}`;
+                document.getElementById('output').innerText = displayText;
+            } else if (response.status === 'connected') {
+                console.log(response.message);
+            }
+        };
+
+        ws.onclose = () => {
+            document.getElementById('status').innerText = '🔴 ตัดการเชื่อมต่อกับเครื่องอ่านบัตร (โปรดรัน node read.js)';
+            document.getElementById('status').style.color = 'red';
+        };
+    </script>
+</body>
+</html>
