@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- 1. เปลี่ยนชื่อแท็บตรงนี้ -->
     <title>ระบบอ่านบัตรประชาชน | Powered by POND</title>
-    
+
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
+
     <style>
         :root {
             --primary: #2563eb;
@@ -38,19 +37,17 @@
             align-items: center;
             min-height: 100vh;
             padding: 20px;
-            overflow: hidden; /* ป้องกัน scrollbar ขึ้นตอนเปิดอนิเมชัน */
+            overflow: hidden;
         }
 
-        /* -------------------------------------------------- */
-        /* อนิเมชันตอนเข้าเว็บ Splash Screen */
-        /* -------------------------------------------------- */
+        /* ---------- Splash Screen ---------- */
         #splashScreen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: #0f172a; /* พื้นหลังสีเข้มดูพรีเมียม */
+            background: #0f172a;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -78,10 +75,7 @@
         }
 
         @keyframes fadeInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .splash-hide {
@@ -89,9 +83,7 @@
             visibility: hidden !important;
         }
 
-        /* -------------------------------------------------- */
-        /* โครงสร้างหน้าเว็บหลัก */
-        /* -------------------------------------------------- */
+        /* ---------- Main ---------- */
         .container {
             width: 100%;
             max-width: 520px;
@@ -102,12 +94,18 @@
             border: 1px solid var(--border);
             opacity: 0;
             transform: scale(0.96);
-            transition: all 0.6s ease;
+            transition: opacity 0.6s ease, transform 0.4s ease, box-shadow 0.4s ease;
         }
 
         .container.show {
             opacity: 1;
             transform: scale(1);
+        }
+
+        /* อนิเมชันตอนเลื่อนเมาส์ไปที่การ์ดหลัก */
+        .container.show:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 28px 40px -10px rgba(37, 99, 235, 0.18);
         }
 
         .header {
@@ -134,26 +132,15 @@
             border-radius: 9999px;
             font-size: 0.875rem;
             font-weight: 500;
-            margin-bottom: 24px;
+            margin-bottom: 16px;
             width: 100%;
             justify-content: center;
             transition: all 0.3s ease;
         }
 
-        .status-badge.connecting {
-            background-color: #f1f5f9;
-            color: var(--text-muted);
-        }
-
-        .status-badge.connected {
-            background-color: var(--success-bg);
-            color: var(--success-text);
-        }
-
-        .status-badge.disconnected {
-            background-color: var(--danger-bg);
-            color: var(--danger-text);
-        }
+        .status-badge.connecting { background-color: #f1f5f9; color: var(--text-muted); }
+        .status-badge.connected { background-color: var(--success-bg); color: var(--success-text); }
+        .status-badge.disconnected { background-color: var(--danger-bg); color: var(--danger-text); }
 
         .status-dot {
             width: 8px;
@@ -162,6 +149,81 @@
             background-color: currentColor;
         }
 
+        .status-badge.connected .status-dot {
+            animation: pulse 1.6s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(21, 128, 61, 0.5); }
+            70% { box-shadow: 0 0 0 8px rgba(21, 128, 61, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(21, 128, 61, 0); }
+        }
+
+        /* ---------- ปุ่มต่างๆ ---------- */
+        .toolbar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            flex: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 11px 14px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: #ffffff;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px -6px rgba(15, 23, 42, 0.2);
+        }
+
+        .btn:active {
+            transform: translateY(0) scale(0.97);
+            box-shadow: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #ffffff;
+        }
+
+        .btn-primary:hover { background: var(--primary-hover); border-color: var(--primary-hover); }
+
+        .btn:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn.copied {
+            background: var(--success-bg);
+            border-color: #86efac;
+            color: var(--success-text);
+        }
+
+        .btn-refresh:hover .refresh-icon {
+            transform: rotate(180deg);
+        }
+
+        .refresh-icon {
+            display: inline-block;
+            transition: transform 0.4s ease;
+        }
+
+        /* ---------- ข้อมูลบัตร ---------- */
         .card-data {
             display: flex;
             flex-direction: column;
@@ -188,7 +250,14 @@
             letter-spacing: 0.05em;
         }
 
+        .field-row {
+            display: flex;
+            gap: 8px;
+            align-items: stretch;
+        }
+
         .field-value {
+            flex: 1;
             font-size: 1rem;
             font-weight: 500;
             color: var(--text-main);
@@ -199,6 +268,15 @@
             min-height: 46px;
             display: flex;
             align-items: center;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+        }
+
+        /* อนิเมชันตอนเลื่อนเมาส์ไปที่ช่องข้อมูล */
+        .field-row:hover .field-value {
+            transform: translateX(4px);
+            border-color: #93c5fd;
+            background: #f0f7ff;
+            box-shadow: 0 6px 14px -8px rgba(37, 99, 235, 0.45);
         }
 
         .field-value.highlight {
@@ -209,6 +287,14 @@
             border-color: #bfdbfe;
         }
 
+        .btn-copy {
+            flex: 0 0 auto;
+            width: auto;
+            padding: 0 14px;
+            font-size: 0.8rem;
+            border-radius: 10px;
+        }
+
         .placeholder-state {
             text-align: center;
             padding: 36px 16px;
@@ -216,12 +302,23 @@
             font-size: 0.95rem;
             border: 2px dashed var(--border);
             border-radius: 14px;
+            transition: border-color 0.3s ease, background 0.3s ease;
+        }
+
+        .placeholder-state:hover {
+            border-color: #93c5fd;
+            background: #f8fbff;
         }
 
         .placeholder-icon {
             font-size: 2.8rem;
             margin-bottom: 12px;
             display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .placeholder-state:hover .placeholder-icon {
+            transform: translateY(-6px) scale(1.1);
         }
 
         .footer-credit {
@@ -233,17 +330,37 @@
             color: var(--text-muted);
             font-weight: 500;
         }
+
+        /* Toast */
+        #toast {
+            position: fixed;
+            bottom: 28px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: #0f172a;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            z-index: 10000;
+        }
+
+        #toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
     </style>
 </head>
 <body>
 
-    <!-- หน้า Splash Screen ตอนเข้าเว็บ -->
     <div id="splashScreen">
         <div class="splash-text">⚡ Powered by POND</div>
         <div class="splash-sub">Smart Card Reader System</div>
     </div>
 
-    <!-- คอนเทนต์หลัก -->
     <div class="container" id="mainContainer">
         <div class="header">
             <h2>🪪 ระบบอ่านบัตรประชาชน</h2>
@@ -253,6 +370,10 @@
         <div id="statusBadge" class="status-badge connecting">
             <span class="status-dot"></span>
             <span id="statusText">กำลังเชื่อมต่อระบบ...</span>
+        </div>
+
+        <div class="toolbar">
+            <button class="btn btn-refresh" id="refreshBtn"><span class="refresh-icon">🔄</span> รีเฟรชหน้า</button>
         </div>
 
         <div id="contentArea">
@@ -267,21 +388,126 @@
         </div>
     </div>
 
+    <div id="toast"></div>
+
     <script>
-        // จังหวะปิด Splash Screen หลังเปิดเว็บ 2 วินาที
+        // ---------- Splash ----------
         window.addEventListener('load', () => {
             setTimeout(() => {
                 document.getElementById('splashScreen').classList.add('splash-hide');
                 document.getElementById('mainContainer').classList.add('show');
-                document.body.style.overflow = 'auto'; // เปิดให้ scroll หน้าเว็บได้ปกติ
+                document.body.style.overflow = 'auto';
             }, 2000);
         });
 
-        // ระบบ WebSocket
-        const ws = new WebSocket('ws://localhost:8080');
+        // ---------- Helpers ----------
         const statusBadge = document.getElementById('statusBadge');
         const statusText = document.getElementById('statusText');
         const contentArea = document.getElementById('contentArea');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const toastEl = document.getElementById('toast');
+
+        let currentFields = []; // เก็บข้อมูลล่าสุดสำหรับปุ่มคัดลอก
+
+        function escapeHtml(str) {
+            return String(str ?? '').replace(/[&<>"']/g, c => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            }[c]));
+        }
+
+        // ตัดคำนำหน้าชื่อ (ไทย)
+        function stripThaiPrefix(name) {
+            let s = String(name ?? '').replace(/#+/g, ' ').replace(/\s+/g, ' ').trim();
+            s = s.replace(/^(นางสาว|น\.ส\.|นาง|นาย|เด็กชาย|เด็กหญิง|ด\.ช\.|ด\.ญ\.)\s+/, '');
+            return s.trim();
+        }
+
+        // ตัดคำนำหน้าชื่อ (อังกฤษ)
+        function stripEnPrefix(name) {
+            let s = String(name ?? '').replace(/#+/g, ' ').replace(/\s+/g, ' ').trim();
+            s = s.replace(/^(Mr|Mrs|Miss|Ms|Master|Mstr)\.?\s+/i, '');
+            return s.trim();
+        }
+
+        // คัดลอกข้อความ (มี fallback เผื่อเปิดจากไฟล์ในเครื่อง)
+        async function copyText(text) {
+            try {
+                if (navigator.clipboard && window.isSecureContext) {
+                    await navigator.clipboard.writeText(text);
+                    return true;
+                }
+                throw new Error('no clipboard api');
+            } catch (e) {
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                ta.style.position = 'fixed';
+                ta.style.opacity = '0';
+                document.body.appendChild(ta);
+                ta.select();
+                let ok = false;
+                try { ok = document.execCommand('copy'); } catch (err) { ok = false; }
+                document.body.removeChild(ta);
+                return ok;
+            }
+        }
+
+        let toastTimer;
+        function showToast(msg) {
+            toastEl.textContent = msg;
+            toastEl.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => toastEl.classList.remove('show'), 1600);
+        }
+
+        function flashButton(btn, doneText) {
+            const original = btn.innerHTML;
+            btn.classList.add('copied');
+            btn.innerHTML = doneText;
+            setTimeout(() => {
+                btn.classList.remove('copied');
+                btn.innerHTML = original;
+            }, 1200);
+        }
+
+        // ---------- ปุ่มรีเฟรช ----------
+        refreshBtn.addEventListener('click', () => location.reload());
+
+        // ---------- แสดงข้อมูล ----------
+        function renderCard(data) {
+            currentFields = [
+                { label: 'เลขประจำตัวประชาชน', value: data.cid || '-', highlight: true },
+                { label: 'ชื่อ - นามสกุล (ไทย)', value: stripThaiPrefix(data.nameTh) || '-' },
+                { label: 'ชื่อ - นามสกุล (อังกฤษ)', value: stripEnPrefix(data.nameEn) || '-' },
+                { label: 'วันเกิด', value: data.dob || '-' },
+                { label: 'ที่อยู่ตามบัตร', value: data.address || '-' }
+            ];
+
+            contentArea.innerHTML = `<div class="card-data">` + currentFields.map((f, i) => `
+                <div class="field-group">
+                    <span class="field-label">${escapeHtml(f.label)}</span>
+                    <div class="field-row">
+                        <div class="field-value ${f.highlight ? 'highlight' : ''}">${escapeHtml(f.value)}</div>
+                        <button class="btn btn-copy" data-index="${i}">📋 คัดลอก</button>
+                    </div>
+                </div>
+            `).join('') + `</div>`;
+
+            contentArea.querySelectorAll('.btn-copy').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    const field = currentFields[btn.dataset.index];
+                    const ok = await copyText(field.value);
+                    if (ok) {
+                        flashButton(btn, '✅ แล้ว');
+                        showToast('คัดลอก' + field.label + 'แล้ว');
+                    } else {
+                        showToast('คัดลอกไม่สำเร็จ');
+                    }
+                });
+            });
+        }
+
+        // ---------- WebSocket ----------
+        const ws = new WebSocket('ws://localhost:8080');
 
         ws.onopen = () => {
             statusBadge.className = 'status-badge connected';
@@ -290,40 +516,15 @@
 
         ws.onmessage = (event) => {
             const response = JSON.parse(event.data);
-            
             if (response.status === 'success') {
-                const data = response.data;
-                
-                contentArea.innerHTML = `
-                    <div class="card-data">
-                        <div class="field-group">
-                            <span class="field-label">เลขประจำตัวประชาชน</span>
-                            <div class="field-value highlight">${data.cid}</div>
-                        </div>
-                        <div class="field-group">
-                            <span class="field-label">ชื่อ - นามสกุล (ไทย)</span>
-                            <div class="field-value">${data.nameTh}</div>
-                        </div>
-                        <div class="field-group">
-                            <span class="field-label">ชื่อ - นามสกุล (อังกฤษ)</span>
-                            <div class="field-value">${data.nameEn || '-'}</div>
-                        </div>
-                        <div class="field-group">
-                            <span class="field-label">วันเกิด</span>
-                            <div class="field-value">${data.dob}</div>
-                        </div>
-                        <div class="field-group">
-                            <span class="field-label">ที่อยู่ตามบัตร</span>
-                            <div class="field-value">${data.address}</div>
-                        </div>
-                    </div>
-                `;
+                renderCard(response.data);
             }
         };
 
         ws.onclose = () => {
             statusBadge.className = 'status-badge disconnected';
             statusText.innerText = 'ตัดการเชื่อมต่อ (โปรดเปิดโปรแกรม read.js)';
+            currentFields = [];
             contentArea.innerHTML = `
                 <div class="placeholder-state">
                     <span class="placeholder-icon">⚠️</span>
