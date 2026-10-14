@@ -523,7 +523,8 @@
 
         ws.onclose = () => {
             statusBadge.className = 'status-badge disconnected';
-            statusText.innerText = 'ตัดการเชื่อมต่อ (โปรดเปิดโปรแกรม read.js)';
+            statusText.innerText = 'ตัดการเชื่อมต่อ (โปรดเปิดโปรแกรม Terminal พิมพ์  cd ~/Desktop/my-card
+node read.js เพื่อเปิดใช้งาน )';
             currentFields = [];
             contentArea.innerHTML = `
                 <div class="placeholder-state">
