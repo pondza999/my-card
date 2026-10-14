@@ -140,7 +140,7 @@
 
         .status-badge.connecting { background-color: #f1f5f9; color: var(--text-muted); }
         .status-badge.connected { background-color: var(--success-bg); color: var(--success-text); }
-        .status-badge.disconnected { background-color: var(--danger-bg); color: var(--danger-text); }
+        .status-badge.disconnected { background-color: var(--danger-bg); color: var(--danger-text); border-radius: 18px; text-align: center; line-height: 1.5; }
 
         .status-dot {
             width: 8px;
@@ -523,8 +523,7 @@
 
         ws.onclose = () => {
             statusBadge.className = 'status-badge disconnected';
-            statusText.innerText = 'ตัดการเชื่อมต่อ (โปรดเปิดโปรแกรม Terminal พิมพ์  cd ~/Desktop/my-card
-node read.js เพื่อเปิดใช้งาน )';
+            statusText.innerText = 'ตัดการเชื่อมต่อ (โปรดเปิดโปรแกรม Terminal พิมพ์ cd ~/Desktop/my-card\nnode read.js เพื่อเปิดใช้งาน)';
             currentFields = [];
             contentArea.innerHTML = `
                 <div class="placeholder-state">
