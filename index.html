@@ -92,17 +92,6 @@
             margin-left: 2px;
         }
 
-        .input-row {
-            display: flex;
-            gap: 8px;
-            align-items: stretch;
-        }
-
-        .input-row input {
-            flex: 1;
-            min-width: 0;
-        }
-
         .input-group input {
             width: 100%;
             padding: 15px 18px;
@@ -117,33 +106,7 @@
             transition: all 0.2s cubic-bezier(0, 0, 0.2, 1);
         }
 
-        .input-group textarea {
-            width: 100%;
-            padding: 15px 18px;
-            font-size: 16px;
-            border-radius: 16px;
-            border: 1px solid rgba(0, 0, 0, 0.08);
-            background: rgba(255, 255, 255, 0.7);
-            color: #1d1d1f;
-            outline: none;
-            resize: vertical;
-            min-height: 96px;
-            transition: all 0.2s cubic-bezier(0, 0, 0.2, 1);
-        }
-
-        .input-row textarea {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .input-group textarea:focus {
-            background: #ffffff;
-            border-color: #0071e3;
-            box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.15);
-        }
-
-        .input-group input::placeholder,
-        .input-group textarea::placeholder {
+        .input-group input::placeholder {
             color: #86868b;
         }
 
@@ -151,30 +114,6 @@
             background: #ffffff;
             border-color: #0071e3;
             box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.15);
-        }
-
-        .copy-btn {
-            flex-shrink: 0;
-            padding: 0 16px;
-            font-size: 14px;
-            font-weight: 600;
-            color: #0071e3;
-            background: rgba(0, 113, 227, 0.08);
-            border: 1px solid rgba(0, 113, 227, 0.2);
-            border-radius: 16px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            white-space: nowrap;
-        }
-
-        .copy-btn:hover {
-            background: rgba(0, 113, 227, 0.15);
-        }
-
-        .copy-btn.copied {
-            color: #1f8a3b;
-            background: rgba(52, 199, 89, 0.12);
-            border-color: rgba(52, 199, 89, 0.35);
         }
 
         button[type="submit"] {
@@ -212,55 +151,17 @@
 
     <div class="glass-card">
         <h2>กรอกข้อมูลติดต่อ</h2>
-        <p class="subtitle">ระบุข้อมูลของท่านเพื่อจัดทำเอกสารรับซ่อม</p>
+        <p class="subtitle">ระบุข้อมูลของท่านเพื่อติดต่อกลับและจัดส่งเอกสารรับซ่อม</p>
 
         <form id="contactForm">
             <div class="input-group">
-                <label for="idCard">เลขบัตรประชาชน</label>
-                <div class="input-row">
-                    <input type="text" id="idCard" name="idCard" placeholder="X-XXXX-XXXXX-XX-X" inputmode="numeric" maxlength="17" autocomplete="off" required>
-                    <button type="button" class="copy-btn" data-target="idCard">คัดลอก</button>
-                </div>
+                <label for="phone">เบอร์โทรศัพท์</label>
+                <input type="tel" id="phone" name="phone" placeholder="08X-XXX-XXXX" pattern="[0-9]{9,10}" title="กรุณากรอกเบอร์โทรศัพท์ตัวเลข 9-10 หลัก" required>
             </div>
 
             <div class="input-group">
-                <label for="firstNameTh">ชื่อ (ภาษาไทย)</label>
-                <div class="input-row">
-                    <input type="text" id="firstNameTh" name="firstNameTh" placeholder="ชื่อ" pattern="[ก-๙ ]+" title="กรุณากรอกชื่อเป็นภาษาไทย" autocomplete="off" required>
-                    <button type="button" class="copy-btn" data-target="firstNameTh">คัดลอก</button>
-                </div>
-            </div>
-
-            <div class="input-group">
-                <label for="lastNameTh">นามสกุล (ภาษาไทย)</label>
-                <div class="input-row">
-                    <input type="text" id="lastNameTh" name="lastNameTh" placeholder="นามสกุล" pattern="[ก-๙ ]+" title="กรุณากรอกนามสกุลเป็นภาษาไทย" autocomplete="off" required>
-                    <button type="button" class="copy-btn" data-target="lastNameTh">คัดลอก</button>
-                </div>
-            </div>
-
-            <div class="input-group">
-                <label for="firstName">ชื่อ (ภาษาอังกฤษ)</label>
-                <div class="input-row">
-                    <input type="text" id="firstName" name="firstName" placeholder="First name" pattern="[A-Za-z .'\-]+" title="กรุณากรอกชื่อเป็นภาษาอังกฤษ" autocomplete="given-name" required>
-                    <button type="button" class="copy-btn" data-target="firstName">คัดลอก</button>
-                </div>
-            </div>
-
-            <div class="input-group">
-                <label for="lastName">นามสกุล (ภาษาอังกฤษ)</label>
-                <div class="input-row">
-                    <input type="text" id="lastName" name="lastName" placeholder="Last name" pattern="[A-Za-z .'\-]+" title="กรุณากรอกนามสกุลเป็นภาษาอังกฤษ" autocomplete="family-name" required>
-                    <button type="button" class="copy-btn" data-target="lastName">คัดลอก</button>
-                </div>
-            </div>
-
-            <div class="input-group">
-                <label for="address">ที่อยู่</label>
-                <div class="input-row">
-                    <textarea id="address" name="address" placeholder="บ้านเลขที่ ซอย ถนน แขวง/ตำบล เขต/อำเภอ จังหวัด รหัสไปรษณีย์" autocomplete="street-address" required></textarea>
-                    <button type="button" class="copy-btn" data-target="address">คัดลอก</button>
-                </div>
+                <label for="email">อีเมล</label>
+                <input type="email" id="email" name="email" placeholder="example@email.com" required>
             </div>
 
             <button type="submit" id="submitBtn">ส่งข้อมูล</button>
@@ -272,68 +173,14 @@
         const form = document.getElementById('contactForm');
         const submitBtn = document.getElementById('submitBtn');
 
-        // ปุ่มคัดลอก
-        document.querySelectorAll('.copy-btn').forEach(btn => {
-            btn.addEventListener('click', async () => {
-                const input = document.getElementById(btn.dataset.target);
-                const text = input.value;
-                if (!text) { input.focus(); return; }
-
-                try {
-                    await navigator.clipboard.writeText(text);
-                } catch (err) {
-                    // fallback สำหรับเบราว์เซอร์ที่ไม่รองรับ
-                    input.select();
-                    document.execCommand('copy');
-                    input.setSelectionRange(0, 0);
-                }
-
-                const original = btn.innerText;
-                btn.innerText = 'คัดลอกแล้ว ✓';
-                btn.classList.add('copied');
-                setTimeout(() => {
-                    btn.innerText = original;
-                    btn.classList.remove('copied');
-                }, 1500);
-            });
-        });
-
-        // ตรวจเลขบัตรประชาชน 13 หลัก (เช็กหลักตรวจสอบ)
-        function isValidThaiID(id) {
-            if (!/^\d{13}$/.test(id)) return false;
-            let sum = 0;
-            for (let i = 0; i < 12; i++) sum += parseInt(id[i]) * (13 - i);
-            return (11 - (sum % 11)) % 10 === parseInt(id[12]);
-        }
-
-        // จัดรูปแบบเลขบัตรขณะพิมพ์ X-XXXX-XXXXX-XX-X
-        const idInput = document.getElementById('idCard');
-        idInput.addEventListener('input', () => {
-            const d = idInput.value.replace(/\D/g, '').slice(0, 13);
-            const parts = [d.slice(0,1), d.slice(1,5), d.slice(5,10), d.slice(10,12), d.slice(12,13)];
-            idInput.value = parts.filter(Boolean).join('-');
-        });
-
         form.addEventListener('submit', e => {
             e.preventDefault();
-
-            const idDigits = idInput.value.replace(/\D/g, '');
-            if (!isValidThaiID(idDigits)) {
-                alert('เลขบัตรประชาชนไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง');
-                idInput.focus();
-                return;
-            }
-
             submitBtn.disabled = true;
             submitBtn.innerText = 'กำลังส่งข้อมูล...';
 
             const formData = new URLSearchParams();
-            formData.append('firstNameTh', form.firstNameTh.value.trim());
-            formData.append('lastNameTh', form.lastNameTh.value.trim());
-            formData.append('idCard', idDigits);
-            formData.append('address', form.address.value.trim());
-            formData.append('firstName', form.firstName.value.trim());
-            formData.append('lastName', form.lastName.value.trim());
+            formData.append('phone', form.phone.value);
+            formData.append('email', form.email.value);
 
             fetch(scriptURL, {
                 method: 'POST',
