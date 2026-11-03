@@ -3,535 +3,359 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบอ่านบัตรประชาชน | Powered by POND</title>
-
-    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
+    <title>กรอกข้อมูลติดต่อ</title>
     <style>
-        :root {
-            --primary: #2563eb;
-            --primary-hover: #1d4ed8;
-            --bg: #f8fafc;
-            --card-bg: #ffffff;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --border: #e2e8f0;
-            --success-bg: #dcfce7;
-            --success-text: #15803d;
-            --danger-bg: #fee2e2;
-            --danger-text: #b91c1c;
-        }
-
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Prompt', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
         }
 
         body {
-            background-color: var(--bg);
-            color: var(--text-main);
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            background-color: #f5f5f7;
             padding: 20px;
+            position: relative;
             overflow: hidden;
         }
 
-        /* ---------- Splash Screen ---------- */
-        #splashScreen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: #0f172a;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            transition: opacity 0.8s ease, visibility 0.8s ease;
-        }
-
-        .splash-text {
-            color: #ffffff;
-            font-size: 2.2rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeInUp 1s ease forwards 0.2s;
-        }
-
-        .splash-sub {
-            color: #94a3b8;
-            font-size: 0.95rem;
-            margin-top: 8px;
-            opacity: 0;
-            animation: fadeInUp 1s ease forwards 0.5s;
-        }
-
-        @keyframes fadeInUp {
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .splash-hide {
-            opacity: 0 !important;
-            visibility: hidden !important;
-        }
-
-        /* ---------- Main ---------- */
-        .container {
-            width: 100%;
-            max-width: 520px;
-            background: var(--card-bg);
-            border-radius: 20px;
-            box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.05);
-            padding: 32px;
-            border: 1px solid var(--border);
-            opacity: 0;
-            transform: scale(0.96);
-            transition: opacity 0.6s ease, transform 0.4s ease, box-shadow 0.4s ease;
-        }
-
-        .container.show {
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        /* อนิเมชันตอนเลื่อนเมาส์ไปที่การ์ดหลัก */
-        .container.show:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 28px 40px -10px rgba(37, 99, 235, 0.18);
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 24px;
-        }
-
-        .header h2 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 6px;
-        }
-
-        .header p {
-            font-size: 0.875rem;
-            color: var(--text-muted);
-        }
-
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 18px;
-            border-radius: 9999px;
-            font-size: 0.875rem;
-            font-weight: 500;
-            margin-bottom: 16px;
-            width: 100%;
-            justify-content: center;
-            transition: all 0.3s ease;
-        }
-
-        .status-badge.connecting { background-color: #f1f5f9; color: var(--text-muted); }
-        .status-badge.connected { background-color: var(--success-bg); color: var(--success-text); }
-        .status-badge.disconnected { background-color: var(--danger-bg); color: var(--danger-text); border-radius: 18px; text-align: center; line-height: 1.5; }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
+        .background-glow-1 {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(0, 113, 227, 0.12) 0%, rgba(255, 255, 255, 0) 70%);
+            top: 10%;
+            left: 25%;
             border-radius: 50%;
-            background-color: currentColor;
+            z-index: 1;
         }
 
-        .status-badge.connected .status-dot {
-            animation: pulse 1.6s infinite;
+        .background-glow-2 {
+            position: absolute;
+            width: 450px;
+            height: 450px;
+            background: radial-gradient(circle, rgba(142, 142, 147, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
+            bottom: 10%;
+            right: 25%;
+            border-radius: 50%;
+            z-index: 1;
         }
 
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(21, 128, 61, 0.5); }
-            70% { box-shadow: 0 0 0 8px rgba(21, 128, 61, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(21, 128, 61, 0); }
+        .glass-card {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 420px;
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(30px) saturate(190%);
+            -webkit-backdrop-filter: blur(30px) saturate(190%);
+            border-radius: 28px;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.04),
+                        0 2px 6px rgba(0, 0, 0, 0.02),
+                        inset 0 1px 1px rgba(255, 255, 255, 0.9);
+            padding: 44px 36px;
         }
 
-        /* ---------- ปุ่มต่างๆ ---------- */
-        .toolbar {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
+        .glass-card h2 {
+            font-size: 26px;
+            font-weight: 700;
+            text-align: center;
+            color: #1d1d1f;
+            margin-bottom: 6px;
+            letter-spacing: -0.02em;
         }
 
-        .btn {
-            flex: 1;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            padding: 11px 14px;
-            border-radius: 10px;
-            border: 1px solid var(--border);
-            background: #ffffff;
-            color: var(--text-main);
-            font-size: 0.9rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+        .glass-card p.subtitle {
+            font-size: 15px;
+            text-align: center;
+            color: #86868b;
+            margin-bottom: 32px;
+            font-weight: 400;
         }
 
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 16px -6px rgba(15, 23, 42, 0.2);
-        }
-
-        .btn:active {
-            transform: translateY(0) scale(0.97);
-            box-shadow: none;
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            border-color: var(--primary);
-            color: #ffffff;
-        }
-
-        .btn-primary:hover { background: var(--primary-hover); border-color: var(--primary-hover); }
-
-        .btn:disabled {
-            opacity: 0.45;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
-        .btn.copied {
-            background: var(--success-bg);
-            border-color: #86efac;
-            color: var(--success-text);
-        }
-
-        .btn-refresh:hover .refresh-icon {
-            transform: rotate(180deg);
-        }
-
-        .refresh-icon {
-            display: inline-block;
-            transition: transform 0.4s ease;
-        }
-
-        /* ---------- ข้อมูลบัตร ---------- */
-        .card-data {
+        .input-group {
+            margin-bottom: 22px;
             display: flex;
             flex-direction: column;
-            gap: 14px;
-            animation: fadeIn 0.5s ease;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .input-group label {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #1d1d1f;
+            margin-left: 2px;
         }
 
-        .field-group {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .field-label {
-            font-size: 0.75rem;
-            font-weight: 500;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .field-row {
+        .input-row {
             display: flex;
             gap: 8px;
             align-items: stretch;
         }
 
-        .field-value {
+        .input-row input {
             flex: 1;
-            font-size: 1rem;
-            font-weight: 500;
-            color: var(--text-main);
-            background: #f8fafc;
-            padding: 12px 16px;
-            border-radius: 10px;
-            border: 1px solid var(--border);
-            min-height: 46px;
-            display: flex;
-            align-items: center;
-            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+            min-width: 0;
         }
 
-        /* อนิเมชันตอนเลื่อนเมาส์ไปที่ช่องข้อมูล */
-        .field-row:hover .field-value {
-            transform: translateX(4px);
-            border-color: #93c5fd;
-            background: #f0f7ff;
-            box-shadow: 0 6px 14px -8px rgba(37, 99, 235, 0.45);
+        .input-group input {
+            width: 100%;
+            padding: 15px 18px;
+            font-size: 16px;
+            border-radius: 16px;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: #1d1d1f;
+            outline: none;
+            transition: all 0.2s cubic-bezier(0, 0, 0.2, 1);
         }
 
-        .field-value.highlight {
-            font-size: 1.15rem;
+        .input-group textarea {
+            width: 100%;
+            padding: 15px 18px;
+            font-size: 16px;
+            border-radius: 16px;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            background: rgba(255, 255, 255, 0.7);
+            color: #1d1d1f;
+            outline: none;
+            resize: vertical;
+            min-height: 96px;
+            transition: all 0.2s cubic-bezier(0, 0, 0.2, 1);
+        }
+
+        .input-row textarea {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .input-group textarea:focus {
+            background: #ffffff;
+            border-color: #0071e3;
+            box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.15);
+        }
+
+        .input-group input::placeholder,
+        .input-group textarea::placeholder {
+            color: #86868b;
+        }
+
+        .input-group input:focus {
+            background: #ffffff;
+            border-color: #0071e3;
+            box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.15);
+        }
+
+        .copy-btn {
+            flex-shrink: 0;
+            padding: 0 16px;
+            font-size: 14px;
             font-weight: 600;
-            color: var(--primary);
-            background: #eff6ff;
-            border-color: #bfdbfe;
+            color: #0071e3;
+            background: rgba(0, 113, 227, 0.08);
+            border: 1px solid rgba(0, 113, 227, 0.2);
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
         }
 
-        .btn-copy {
-            flex: 0 0 auto;
-            width: auto;
-            padding: 0 14px;
-            font-size: 0.8rem;
-            border-radius: 10px;
+        .copy-btn:hover {
+            background: rgba(0, 113, 227, 0.15);
         }
 
-        .placeholder-state {
-            text-align: center;
-            padding: 36px 16px;
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            border: 2px dashed var(--border);
-            border-radius: 14px;
-            transition: border-color 0.3s ease, background 0.3s ease;
+        .copy-btn.copied {
+            color: #1f8a3b;
+            background: rgba(52, 199, 89, 0.12);
+            border-color: rgba(52, 199, 89, 0.35);
         }
 
-        .placeholder-state:hover {
-            border-color: #93c5fd;
-            background: #f8fbff;
+        button[type="submit"] {
+            width: 100%;
+            padding: 16px;
+            font-size: 17px;
+            font-weight: 600;
+            color: #ffffff;
+            background: #0071e3;
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 14px rgba(0, 113, 227, 0.25);
+            margin-top: 10px;
         }
 
-        .placeholder-icon {
-            font-size: 2.8rem;
-            margin-bottom: 12px;
-            display: block;
-            transition: transform 0.3s ease;
+        button[type="submit"]:hover {
+            background: #0077ed;
+            box-shadow: 0 6px 20px rgba(0, 113, 227, 0.35);
+            transform: translateY(-1px);
         }
 
-        .placeholder-state:hover .placeholder-icon {
-            transform: translateY(-6px) scale(1.1);
-        }
-
-        .footer-credit {
-            text-align: center;
-            margin-top: 28px;
-            padding-top: 16px;
-            border-top: 1px solid var(--border);
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            font-weight: 500;
-        }
-
-        /* Toast */
-        #toast {
-            position: fixed;
-            bottom: 28px;
-            left: 50%;
-            transform: translateX(-50%) translateY(20px);
-            background: #0f172a;
-            color: #fff;
-            padding: 10px 20px;
-            border-radius: 9999px;
-            font-size: 0.875rem;
-            opacity: 0;
-            pointer-events: none;
-            transition: all 0.3s ease;
-            z-index: 10000;
-        }
-
-        #toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
+        button[type="submit"]:disabled {
+            background: #a1a1a6;
+            cursor: not-allowed;
+            box-shadow: none;
         }
     </style>
 </head>
 <body>
 
-    <div id="splashScreen">
-        <div class="splash-text">⚡ Powered by POND ติดต่อ pond9999@tuta.io</div>
-        <div class="splash-sub">Smart Card Reader System</div>
-    </div>
+    <div class="background-glow-1"></div>
+    <div class="background-glow-2"></div>
 
-    <div class="container" id="mainContainer">
-        <div class="header">
-            <h2>🪪 ระบบอ่านบัตรประชาชน</h2>
-            <p>เสียบบัตรประชาชนเข้ากับเครื่องอ่านเพื่อดึงข้อมูลอัตโนมัติ</p>
-        </div>
+    <div class="glass-card">
+        <h2>กรอกข้อมูลติดต่อ</h2>
+        <p class="subtitle">ระบุข้อมูลของท่านเพื่อจัดทำเอกสารรับซ่อม</p>
 
-        <div id="statusBadge" class="status-badge connecting">
-            <span class="status-dot"></span>
-            <span id="statusText">กำลังเชื่อมต่อระบบ...</span>
-        </div>
-
-        <div class="toolbar">
-            <button class="btn btn-refresh" id="refreshBtn"><span class="refresh-icon">🔄</span> รีเฟรชหน้า</button>
-        </div>
-
-        <div id="contentArea">
-            <div class="placeholder-state">
-                <span class="placeholder-icon">💳</span>
-                กรุณาเสียบบัตรประชาชนเข้ากับเครื่องอ่าน
+        <form id="contactForm">
+            <div class="input-group">
+                <label for="idCard">เลขบัตรประชาชน</label>
+                <div class="input-row">
+                    <input type="text" id="idCard" name="idCard" placeholder="X-XXXX-XXXXX-XX-X" inputmode="numeric" maxlength="17" autocomplete="off" required>
+                    <button type="button" class="copy-btn" data-target="idCard">คัดลอก</button>
+                </div>
             </div>
-        </div>
 
-        <div class="footer-credit">
-            Powered by POND
-        </div>
+            <div class="input-group">
+                <label for="firstNameTh">ชื่อ (ภาษาไทย)</label>
+                <div class="input-row">
+                    <input type="text" id="firstNameTh" name="firstNameTh" placeholder="ชื่อ" pattern="[ก-๙ ]+" title="กรุณากรอกชื่อเป็นภาษาไทย" autocomplete="off" required>
+                    <button type="button" class="copy-btn" data-target="firstNameTh">คัดลอก</button>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="lastNameTh">นามสกุล (ภาษาไทย)</label>
+                <div class="input-row">
+                    <input type="text" id="lastNameTh" name="lastNameTh" placeholder="นามสกุล" pattern="[ก-๙ ]+" title="กรุณากรอกนามสกุลเป็นภาษาไทย" autocomplete="off" required>
+                    <button type="button" class="copy-btn" data-target="lastNameTh">คัดลอก</button>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="firstName">ชื่อ (ภาษาอังกฤษ)</label>
+                <div class="input-row">
+                    <input type="text" id="firstName" name="firstName" placeholder="First name" pattern="[A-Za-z .'\-]+" title="กรุณากรอกชื่อเป็นภาษาอังกฤษ" autocomplete="given-name" required>
+                    <button type="button" class="copy-btn" data-target="firstName">คัดลอก</button>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="lastName">นามสกุล (ภาษาอังกฤษ)</label>
+                <div class="input-row">
+                    <input type="text" id="lastName" name="lastName" placeholder="Last name" pattern="[A-Za-z .'\-]+" title="กรุณากรอกนามสกุลเป็นภาษาอังกฤษ" autocomplete="family-name" required>
+                    <button type="button" class="copy-btn" data-target="lastName">คัดลอก</button>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="address">ที่อยู่</label>
+                <div class="input-row">
+                    <textarea id="address" name="address" placeholder="บ้านเลขที่ ซอย ถนน แขวง/ตำบล เขต/อำเภอ จังหวัด รหัสไปรษณีย์" autocomplete="street-address" required></textarea>
+                    <button type="button" class="copy-btn" data-target="address">คัดลอก</button>
+                </div>
+            </div>
+
+            <button type="submit" id="submitBtn">ส่งข้อมูล</button>
+        </form>
     </div>
-
-    <div id="toast"></div>
 
     <script>
-        // ---------- Splash ----------
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                document.getElementById('splashScreen').classList.add('splash-hide');
-                document.getElementById('mainContainer').classList.add('show');
-                document.body.style.overflow = 'auto';
-            }, 2000);
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbx2B4e3WWdY3KVAXDD6AaUiWrO3RaByHwIp2IBC4HNmDgjtSosSHJjKbN-pusooZtKm/exec';
+        const form = document.getElementById('contactForm');
+        const submitBtn = document.getElementById('submitBtn');
+
+        // ปุ่มคัดลอก
+        document.querySelectorAll('.copy-btn').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const input = document.getElementById(btn.dataset.target);
+                const text = input.value;
+                if (!text) { input.focus(); return; }
+
+                try {
+                    await navigator.clipboard.writeText(text);
+                } catch (err) {
+                    // fallback สำหรับเบราว์เซอร์ที่ไม่รองรับ
+                    input.select();
+                    document.execCommand('copy');
+                    input.setSelectionRange(0, 0);
+                }
+
+                const original = btn.innerText;
+                btn.innerText = 'คัดลอกแล้ว ✓';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.innerText = original;
+                    btn.classList.remove('copied');
+                }, 1500);
+            });
         });
 
-        // ---------- Helpers ----------
-        const statusBadge = document.getElementById('statusBadge');
-        const statusText = document.getElementById('statusText');
-        const contentArea = document.getElementById('contentArea');
-        const refreshBtn = document.getElementById('refreshBtn');
-        const toastEl = document.getElementById('toast');
-
-        let currentFields = []; // เก็บข้อมูลล่าสุดสำหรับปุ่มคัดลอก
-
-        function escapeHtml(str) {
-            return String(str ?? '').replace(/[&<>"']/g, c => ({
-                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-            }[c]));
+        // ตรวจเลขบัตรประชาชน 13 หลัก (เช็กหลักตรวจสอบ)
+        function isValidThaiID(id) {
+            if (!/^\d{13}$/.test(id)) return false;
+            let sum = 0;
+            for (let i = 0; i < 12; i++) sum += parseInt(id[i]) * (13 - i);
+            return (11 - (sum % 11)) % 10 === parseInt(id[12]);
         }
 
-        // ตัดคำนำหน้าชื่อ (ไทย)
-        function stripThaiPrefix(name) {
-            let s = String(name ?? '').replace(/#+/g, ' ').replace(/\s+/g, ' ').trim();
-            s = s.replace(/^(นางสาว|น\.ส\.|นาง|นาย|เด็กชาย|เด็กหญิง|ด\.ช\.|ด\.ญ\.)\s+/, '');
-            return s.trim();
-        }
+        // จัดรูปแบบเลขบัตรขณะพิมพ์ X-XXXX-XXXXX-XX-X
+        const idInput = document.getElementById('idCard');
+        idInput.addEventListener('input', () => {
+            const d = idInput.value.replace(/\D/g, '').slice(0, 13);
+            const parts = [d.slice(0,1), d.slice(1,5), d.slice(5,10), d.slice(10,12), d.slice(12,13)];
+            idInput.value = parts.filter(Boolean).join('-');
+        });
 
-        // ตัดคำนำหน้าชื่อ (อังกฤษ)
-        function stripEnPrefix(name) {
-            let s = String(name ?? '').replace(/#+/g, ' ').replace(/\s+/g, ' ').trim();
-            s = s.replace(/^(Mr|Mrs|Miss|Ms|Master|Mstr)\.?\s+/i, '');
-            return s.trim();
-        }
+        form.addEventListener('submit', e => {
+            e.preventDefault();
 
-        // คัดลอกข้อความ (มี fallback เผื่อเปิดจากไฟล์ในเครื่อง)
-        async function copyText(text) {
-            try {
-                if (navigator.clipboard && window.isSecureContext) {
-                    await navigator.clipboard.writeText(text);
-                    return true;
-                }
-                throw new Error('no clipboard api');
-            } catch (e) {
-                const ta = document.createElement('textarea');
-                ta.value = text;
-                ta.style.position = 'fixed';
-                ta.style.opacity = '0';
-                document.body.appendChild(ta);
-                ta.select();
-                let ok = false;
-                try { ok = document.execCommand('copy'); } catch (err) { ok = false; }
-                document.body.removeChild(ta);
-                return ok;
+            const idDigits = idInput.value.replace(/\D/g, '');
+            if (!isValidThaiID(idDigits)) {
+                alert('เลขบัตรประชาชนไม่ถูกต้อง กรุณาตรวจสอบอีกครั้ง');
+                idInput.focus();
+                return;
             }
-        }
 
-        let toastTimer;
-        function showToast(msg) {
-            toastEl.textContent = msg;
-            toastEl.classList.add('show');
-            clearTimeout(toastTimer);
-            toastTimer = setTimeout(() => toastEl.classList.remove('show'), 1600);
-        }
+            submitBtn.disabled = true;
+            submitBtn.innerText = 'กำลังส่งข้อมูล...';
 
-        function flashButton(btn, doneText) {
-            const original = btn.innerHTML;
-            btn.classList.add('copied');
-            btn.innerHTML = doneText;
-            setTimeout(() => {
-                btn.classList.remove('copied');
-                btn.innerHTML = original;
-            }, 1200);
-        }
+            const formData = new URLSearchParams();
+            formData.append('firstNameTh', form.firstNameTh.value.trim());
+            formData.append('lastNameTh', form.lastNameTh.value.trim());
+            formData.append('idCard', idDigits);
+            formData.append('address', form.address.value.trim());
+            formData.append('firstName', form.firstName.value.trim());
+            formData.append('lastName', form.lastName.value.trim());
 
-        // ---------- ปุ่มรีเฟรช ----------
-        refreshBtn.addEventListener('click', () => location.reload());
-
-        // ---------- แสดงข้อมูล ----------
-        function renderCard(data) {
-            currentFields = [
-                { label: 'เลขประจำตัวประชาชน', value: data.cid || '-', highlight: true },
-                { label: 'ชื่อ - นามสกุล (ไทย)', value: stripThaiPrefix(data.nameTh) || '-' },
-                { label: 'ชื่อ - นามสกุล (อังกฤษ)', value: stripEnPrefix(data.nameEn) || '-' },
-                { label: 'วันเกิด', value: data.dob || '-' },
-                { label: 'ที่อยู่ตามบัตร', value: data.address || '-' }
-            ];
-
-            contentArea.innerHTML = `<div class="card-data">` + currentFields.map((f, i) => `
-                <div class="field-group">
-                    <span class="field-label">${escapeHtml(f.label)}</span>
-                    <div class="field-row">
-                        <div class="field-value ${f.highlight ? 'highlight' : ''}">${escapeHtml(f.value)}</div>
-                        <button class="btn btn-copy" data-index="${i}">📋 คัดลอก</button>
-                    </div>
-                </div>
-            `).join('') + `</div>`;
-
-            contentArea.querySelectorAll('.btn-copy').forEach(btn => {
-                btn.addEventListener('click', async () => {
-                    const field = currentFields[btn.dataset.index];
-                    const ok = await copyText(field.value);
-                    if (ok) {
-                        flashButton(btn, '✅ แล้ว');
-                        showToast('คัดลอก' + field.label + 'แล้ว');
-                    } else {
-                        showToast('คัดลอกไม่สำเร็จ');
-                    }
-                });
+            fetch(scriptURL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: formData.toString()
+            })
+            .then(() => {
+                alert('บันทึกข้อมูลเรียบร้อยแล้ว!');
+                form.reset();
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'ส่งข้อมูล';
+            })
+            .catch(error => {
+                alert('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง');
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'ส่งข้อมูล';
             });
-        }
-
-        // ---------- WebSocket ----------
-        const ws = new WebSocket('ws://localhost:8080');
-
-        ws.onopen = () => {
-            statusBadge.className = 'status-badge connected';
-            statusText.innerText = 'พร้อมใช้งาน (รอการเสียบบัตร)';
-        };
-
-        ws.onmessage = (event) => {
-            const response = JSON.parse(event.data);
-            if (response.status === 'success') {
-                renderCard(response.data);
-            }
-        };
-
-        ws.onclose = () => {
-            statusBadge.className = 'status-badge disconnected';
-            statusText.innerText = 'ตัดการเชื่อมต่อ (โปรดเปิดโปรแกรม Terminal พิมพ์ cd ~/Desktop/my-card\nnode read.js เพื่อเปิดใช้งาน)';
-            currentFields = [];
-            contentArea.innerHTML = `
-                <div class="placeholder-state">
-                    <span class="placeholder-icon">⚠️</span>
-                    ไม่สามารถเชื่อมต่อกับเครื่องอ่านบัตรได้
-                </div>
-            `;
-        };
+        });
     </script>
+
 </body>
 </html>
